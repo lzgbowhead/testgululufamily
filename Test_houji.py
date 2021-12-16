@@ -24,13 +24,13 @@ class TestHouji(unittest.TestCase):
     def setUp(self):
         global w_x
         global h_y
-        w_x = driver.get_window_size()['width']
-        h_y = driver.get_window_size()['height']
-        print(driver.get_window_size())
-
         global driver
 
         driver = houji_config().get_driver()
+
+        w_x = driver.get_window_size()['width']
+        h_y = driver.get_window_size()['height']
+        print(driver.get_window_size())
 
         global create_chile_flag 
 
@@ -69,9 +69,15 @@ class TestHouji(unittest.TestCase):
 
         ve_code = str(input("ve_code:"))
 
-        a = 57/576
-        b = 417/1024
-        driver.tap([(a*w_x, b*y)],2)
+        # a = 57/576
+        # b = 417/1024
+
+        a = 155/1080
+        b = 10121/1920
+
+        print(a*w_x)
+        print(b*h_y)
+        driver.tap([(a*w_x, b*h_y)],2)
 
         for i in ve_code:
             driver.press_keycode(int(i)+7)
@@ -211,7 +217,9 @@ class TestHouji(unittest.TestCase):
 
         driver.implicitly_wait(500)
 
-        driver.find_elements(By.XPATH,'//android.view.View[@content-desc="30:92:F6:4C:15:79 A302-001C -57 dBm"]') #配对001c设备
+        # driver.find_elements(By.XPATH,'//android.view.View[@content-desc="30:92:F6:4C:15:79 A302-001C -57 dBm"]') #配对001c设备
+
+        self.driver.find_element_by_android_uiautomator('new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("30:92:F6:4C:15:79 A302-001C -57 dBm"))')
 
         driver.implicitly_wait(500)
 
@@ -267,37 +275,35 @@ class TestHouji(unittest.TestCase):
 
         self.login()
 
-        # self.setUp()
+        self.member_view_enter_create_child()
 
-        # self.member_view_enter_create_child()
+        self.create_child()
 
-        # self.create_child()
+        driver.implicitly_wait(500)
 
-        # driver.implicitly_wait(500)
+        global create_chile_flag
 
-        # global create_chile_flag
+        if create_chile_flag == 1:
 
-        # if create_chile_flag == 1:
+            driver.find_elements(By.CLASS_NAME,"android.widget.ImageView")[0].click()#click "x" enter member view
 
-        #     driver.find_elements(By.CLASS_NAME,"android.widget.ImageView")[0].click()#click "x" enter member view
+            driver.implicitly_wait(500)
 
-        #     driver.implicitly_wait(500)
+            create_chile_flag =  create_chile_flag + 1
 
-        #     create_chile_flag =  create_chile_flag + 1
+            TestHouji().member_view_enter_create_child()
 
-        #     TestHouji().member_view_enter_create_child()
+            driver.implicitly_wait(500)
 
-        #     driver.implicitly_wait(500)
+            TestHouji().pair_device()
 
-        #     TestHouji().pair_device()
+            create_child()
 
-        #     create_child()
+        else:
 
-        # else:
+            driver.find_element(By.ACCESSIBILITY_ID,"添加设备").click() #enter device pairing page
 
-        #     driver.find_element(By.ACCESSIBILITY_ID,"添加设备").click() #enter device pairing page
-
-        #     pair_device()
+            pair_device()
     
 
     def test_new_account_pair_device(self):

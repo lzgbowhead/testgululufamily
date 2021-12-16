@@ -17,7 +17,7 @@ class houji_config(object):
 
             "appActivity": "com.bowhead.houji.MainActivity",
 
-            'platformVersion': '6',
+            'platformVersion': '8',
 
             'noReset': True,
 
